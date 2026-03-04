@@ -1,0 +1,16 @@
+[
+  {
+    "Id": "a09e8518-5d94-4920-9540-a6cd5e00da39",
+    "Name": "\u0421\u043C\u0430\u0440\u0442\u0444\u043E\u043D Samsung Galaxy S23",
+    "Definition": "\u0424\u043B\u0430\u0433\u043C\u0430\u043D\u0441\u043A\u0438\u0439 \u0441\u043C\u0430\u0440\u0442\u0444\u043E\u043D \u0441 \u043A\u0430\u043C\u0435\u0440\u043E\u0439 50 \u041C\u041F, \u043F\u0440\u043E\u0446\u0435\u0441\u0441\u043E\u0440 Snapdragon 8 Gen 2, 8 \u0413\u0411 RAM",
+    "Price": 79999.99,
+    "Image": "https://example.com/samsung-s23.jpg"
+  },
+  {
+    "Id": "73a3bfae-7ccf-4acc-bef3-92798a5471b7",
+    "Name": "\u041D\u043E\u0443\u0442\u0431\u0443\u043A ASUS ROG Strix",
+    "Definition": "\u0418\u0433\u0440\u043E\u0432\u043E\u0439 \u043D\u043E\u0443\u0442\u0431\u0443\u043A \u0441 RTX 4060, 32 \u0413\u0411 RAM, 1 \u0422\u0411 SSD, \u043F\u0440\u043E\u0446\u0435\u0441\u0441\u043E\u0440 Intel Core i9",
+    "Price": 149999.99,
+    "Image": "https://example.com/asus-rog.jpg"
+  }
+]

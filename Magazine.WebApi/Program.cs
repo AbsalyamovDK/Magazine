@@ -3,24 +3,24 @@ using Magazine.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Внедрение зависимостей - связываем интерфейс с реализацией
+// Используем Singleton, чтобы данные сохранялись между запросами
 builder.Services.AddSingleton<IProductService, ProductService>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); // Теперь работает после установки пакета
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();      // Теперь работает
-    app.UseSwaggerUI();    // Теперь работает
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();

@@ -6,19 +6,19 @@ using Magazine.Core.Services;
 
 namespace Magazine.WebApi.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    [ApiController] //указывает, что это API контроллер
+    [Route("api/[controller]")] //маршрут: api/Product
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _productService;
+        private readonly IProductService _productService; //приватное поле. Можно установить только в конструкторе с полем _productService для хранения ссылки на сервис (_ соглашение для приватных полей)
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService) //внедряет зависимости
         {
-            _productService = productService;
+            _productService = productService; //сохраняет полученный сервис в приватное поле для использования в методах
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Product>> GetAll()
+        [HttpGet] // обработка HTTP Get запросов
+        public ActionResult<IEnumerable<Product>> GetAll() //Возвращает HTTP ответ со списом товаров 
         {
             try
             {
@@ -31,7 +31,7 @@ namespace Magazine.WebApi.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}")] //обработка HTTP Get запросо по ID (возвращает один товар)
         public ActionResult<Product> GetById(Guid id)
         {
             try
@@ -55,8 +55,8 @@ namespace Magazine.WebApi.Controllers
             }
         }
 
-        [HttpPost]
-        public ActionResult<Product> Add([FromBody] Product product)
+        [HttpPost] //обработка HTTP Post запросов для создания нового ресурса 
+        public ActionResult<Product> Add([FromBody] Product product) //FromBody - данные берутся из тела JSON
         {
             try
             {
@@ -101,7 +101,7 @@ namespace Magazine.WebApi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}")] //HTTP Put запроосы для обновления Put /api/Product/{id}
         public ActionResult<Product> Edit(Guid id, [FromBody] Product product)
         {
             try
