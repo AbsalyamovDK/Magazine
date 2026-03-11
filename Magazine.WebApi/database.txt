@@ -12,5 +12,12 @@
     "Definition": "\u0418\u0433\u0440\u043E\u0432\u043E\u0439 \u043D\u043E\u0443\u0442\u0431\u0443\u043A \u0441 RTX 4060, 32 \u0413\u0411 RAM, 1 \u0422\u0411 SSD, \u043F\u0440\u043E\u0446\u0435\u0441\u0441\u043E\u0440 Intel Core i9",
     "Price": 149999.99,
     "Image": "https://example.com/asus-rog.jpg"
+  },
+  {
+    "Id": "3fa85f64-5717-4562-b3fc-2c999f66afa6",
+    "Name": "\u0410\u043B\u0435\u043A\u0441\u0435\u0435\u0432",
+    "Definition": "\u0414\u0432\u043E\u0438\u0447\u043D\u044B\u0439 \u043A\u043E\u043C\u043F\u044C\u044E\u0442\u0435\u0440 \u043D\u0430 \u0442\u044B\u043A \u0442\u044B\u043A \u0442\u044B\u043A",
+    "Price": 1111.0,
+    "Image": "laplap.png"
   }
 ]

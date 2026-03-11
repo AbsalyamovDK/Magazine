@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magazine.Core", "Magazine.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magazine.WebApi", "Magazine.WebApi\Magazine.WebApi.csproj", "{6B3C1D16-35A6-468B-8BF4-73B22C779C94}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magazine.Tests", "Magazine.Tests\Magazine.Tests.csproj", "{D6B5D6D2-DAA2-4CFF-9089-8995E224232F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{6B3C1D16-35A6-468B-8BF4-73B22C779C94}.Release|x64.Build.0 = Release|Any CPU
 		{6B3C1D16-35A6-468B-8BF4-73B22C779C94}.Release|x86.ActiveCfg = Release|Any CPU
 		{6B3C1D16-35A6-468B-8BF4-73B22C779C94}.Release|x86.Build.0 = Release|Any CPU
+		{D6B5D6D2-DAA2-4CFF-9089-8995E224232F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6B5D6D2-DAA2-4CFF-9089-8995E224232F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6B5D6D2-DAA2-4CFF-9089-8995E224232F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D6B5D6D2-DAA2-4CFF-9089-8995E224232F}.Debug|x64.Build.0 = Debug|Any CPU
+		{D6B5D6D2-DAA2-4CFF-9089-8995E224232F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D6B5D6D2-DAA2-4CFF-9089-8995E224232F}.Debug|x86.Build.0 = Debug|Any CPU
+		{D6B5D6D2-DAA2-4CFF-9089-8995E224232F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6B5D6D2-DAA2-4CFF-9089-8995E224232F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6B5D6D2-DAA2-4CFF-9089-8995E224232F}.Release|x64.ActiveCfg = Release|Any CPU
+		{D6B5D6D2-DAA2-4CFF-9089-8995E224232F}.Release|x64.Build.0 = Release|Any CPU
+		{D6B5D6D2-DAA2-4CFF-9089-8995E224232F}.Release|x86.ActiveCfg = Release|Any CPU
+		{D6B5D6D2-DAA2-4CFF-9089-8995E224232F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
