@@ -1,200 +1,122 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
 using Magazine.Core.Models;
 using Magazine.Core.Services;
+using Magazine.WebApi.Data;
 using Microsoft.Extensions.Configuration;
 
 namespace Magazine.WebApi.Services
 {
+    /// <summary>
+    /// Реализация сервиса товаров с использованием SQLite
+    /// </summary>
     public class ProductService : IProductService
     {
-        // Словарь для хранения данных в памяти (ключ - Id товара)
-        private readonly Dictionary<Guid, Product> _products;
-        
-        // Путь к файлу базы данных из конфигурации
-        private readonly string _filePath;
-        
-        // Мьютекс для потокобезопасной записи в файл
-        private static readonly Mutex _fileMutex = new Mutex();
+        private readonly Database _database;
 
-        // Конструктор - принимает IConfiguration
+        /// <summary>
+        /// Конструктор - принимает конфигурацию и создает подключение к БД
+        /// </summary>
         public ProductService(IConfiguration configuration)
         {
-            // Получаем путь к файлу из конфигурации
-            _filePath = configuration["DataBaseFilePath"] 
-                ?? throw new InvalidOperationException("DataBaseFilePath не найден в конфигурации");
+            // Получаем путь к файлу БД из конфигурации
+            var databasePath = configuration["Database:FilePath"] 
+                ?? throw new InvalidOperationException("Database:FilePath не найден в конфигурации");
             
-            // Инициализируем словарь
-            _products = new Dictionary<Guid, Product>();
-            
-            // Загружаем данные из файла при создании сервиса
-            InitFromFile();
+            // Создаем экземпляр Database для работы с SQLite
+            _database = new Database(databasePath);
         }
 
         /// <summary>
-        /// Загрузка данных из файла (десериализация)
+        /// Добавление нового товара
         /// </summary>
-        private void InitFromFile()
-        {
-            try
-            {
-                // Проверяем, существует ли файл
-                if (File.Exists(_filePath))
-                {
-                    // Читаем весь текст из файла
-                    string jsonText = File.ReadAllText(_filePath);
-                    
-                    // Десериализуем JSON в список продуктов
-                    var products = JsonSerializer.Deserialize<List<Product>>(jsonText);
-                    
-                    // Очищаем словарь и заполняем из списка
-                    _products.Clear();
-                    if (products != null)
-                    {
-                        foreach (var product in products)
-                        {
-                            _products[product.Id] = product;
-                        }
-                    }
-                }
-                else
-                {
-                    // Если файла нет - создаем пустой словарь
-                    Console.WriteLine($"Файл {_filePath} не найден. Будет создан новый при сохранении.");
-                }
-            }
-            catch (Exception ex)
-            {
-                // Логируем ошибку, но не прерываем работу
-                Console.WriteLine($"Ошибка при загрузке из файла: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Сохранение данных в файл (сериализация)
-        /// </summary>
-        private void WriteToFile()
-        {
-            try
-            {
-                // Захватываем мьютекс для потокобезопасной записи
-                _fileMutex.WaitOne();
-                
-                try
-                {
-                    // Преобразуем словарь в список для сериализации
-                    var products = _products.Values.ToList();
-                    
-                    // Сериализуем список в JSON (с красивым форматированием)
-                    var options = new JsonSerializerOptions { WriteIndented = true };
-                    string jsonText = JsonSerializer.Serialize(products, options);
-                    
-                    // Записываем в файл
-                    File.WriteAllText(_filePath, jsonText);
-                }
-                finally
-                {
-                    // Освобождаем мьютекс в любом случае
-                    _fileMutex.ReleaseMutex();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ошибка при записи в файл: {ex.Message}");
-                throw; // Пробрасываем исключение дальше
-            }
-        }
-
         public Product Add(Product product)
         {
             if (product == null)
                 throw new ArgumentNullException(nameof(product));
 
-            // Проверяем, существует ли уже товар с таким Id
-            if (_products.ContainsKey(product.Id))
+            // Проверяем, существует ли уже товар с таким ID
+            var existing = _database.GetProductById(product.Id);
+            if (existing != null)
                 throw new InvalidOperationException($"Товар с Id {product.Id} уже существует");
 
-            // Если Id пустой - генерируем новый
+            // Если ID пустой - генерируем новый
             if (product.Id == Guid.Empty)
                 product.Id = Guid.NewGuid();
 
-            // Добавляем в словарь
-            _products[product.Id] = product;
-            
-            // Сохраняем изменения на диск
-            WriteToFile();
+            // Добавляем в базу данных
+            _database.AddProduct(product);
             
             return product;
         }
 
+        /// <summary>
+        /// Удаление товара по ID
+        /// </summary>
         public Product? Remove(Guid id)
         {
             if (id == Guid.Empty)
                 throw new ArgumentException("Id не может быть пустым");
 
-            // Пытаемся удалить из словаря
-            if (_products.TryGetValue(id, out var product))
+            // Сначала получаем товар (чтобы вернуть его после удаления)
+            var product = _database.GetProductById(id);
+            
+            if (product != null)
             {
-                _products.Remove(id);
-                
-                // Сохраняем изменения на диск
-                WriteToFile();
-                
-                return product;
+                _database.DeleteProduct(id);
             }
             
-            return null; // Товар не найден
+            return product;
         }
 
+        /// <summary>
+        /// Редактирование товара
+        /// </summary>
         public Product Edit(Product updatedProduct)
         {
             if (updatedProduct == null)
                 throw new ArgumentNullException(nameof(updatedProduct));
 
             // Проверяем, существует ли товар
-            if (!_products.ContainsKey(updatedProduct.Id))
+            var existing = _database.GetProductById(updatedProduct.Id);
+            if (existing == null)
                 throw new KeyNotFoundException($"Товар с Id {updatedProduct.Id} не найден");
 
-            // Обновляем данные в словаре
-            _products[updatedProduct.Id] = updatedProduct;
-            
-            // Сохраняем изменения на диск
-            WriteToFile();
+            // Обновляем в базе данных
+            _database.UpdateProduct(updatedProduct);
             
             return updatedProduct;
         }
 
+        /// <summary>
+        /// Поиск товара по строке
+        /// </summary>
         public Product? Search(string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 throw new ArgumentException("Поисковый запрос не может быть пустым");
 
-            var normalizedSearchTerm = searchTerm.ToLower().Trim();
-            
-            // Ищем по всем товарам в словаре
-            return _products.Values.FirstOrDefault(p => 
-                (p.Name?.ToLower().Contains(normalizedSearchTerm) ?? false) ||
-                (p.Definition?.ToLower().Contains(normalizedSearchTerm) ?? false)
-            );
+            return _database.SearchProduct(searchTerm);
         }
 
+        /// <summary>
+        /// Получение всех товаров
+        /// </summary>
         public IEnumerable<Product> GetAll()
         {
-            // Возвращаем копию всех значений словаря
-            return _products.Values.ToList();
+            return _database.GetAllProducts();
         }
 
+        /// <summary>
+        /// Получение товара по ID
+        /// </summary>
         public Product? GetById(Guid id)
         {
             if (id == Guid.Empty)
                 throw new ArgumentException("Id не может быть пустым");
 
-            // Пытаемся получить из словаря
-            _products.TryGetValue(id, out var product);
-            return product;
+            return _database.GetProductById(id);
         }
     }
 }
