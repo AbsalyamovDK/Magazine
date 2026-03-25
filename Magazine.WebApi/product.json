@@ -1,1 +1,1 @@
-{"name":"Тестовый товар","definition":"Описание товара","price":999.99,"image":"test.jpg"}
+echo '{"name":"Смартфон","definition":"Новый смартфон","price":50000,"image":"phone.jpg"}' > product.json
